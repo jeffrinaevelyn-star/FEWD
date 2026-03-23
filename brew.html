@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      Equipment
+    </title>
+      <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
+<link rel="stylesheet" href="final.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  </head>
+  <body>
+    <nav>
+      <h2>VelvetRoast</h2>
+        <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <ul id="primary-navigation">
+          <li><a href="firstpage.html">Home</a></li>
+          <li class="dropdown">
+            <a href="#">Coffee</a>
+            <ul class="dropdown-menu">
+                <li><a href="brew.html">Brewing Equipments</a></li>
+                <li><a href="coffee.html">Coffee Beans</a></li>
+                <li><a href="origin.html">Coffee Origin</a></li>
+            </ul>  
+          </li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="offers.html">Offers</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-icons">
+          <a href="cart.html" class="cart-link" aria-label="Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="cart-count" class="cart-count">0</span>
+          </a>
+            <a href="register.html" aria-label="Register">
+            <i class="fa-solid fa-user"></i>
+            </a>
+        </div>
+    </nav>
+
+    <section class="bean-title">
+      <h1>Brewing Equipment</h1>
+      <p>Discover premium tools that help you craft cafe-style coffee at home.</p>
+    </section>
+  
+  
+  <!-- PRODUCTS -->
+  <section class="bean-products">
+    <div class="bean-card">
+      <img src="french.jpg" alt="French Press Coffee Maker">
+      <h3>French Press Coffee Maker</h3>
+      <div class="price">$110</div>
+      <button onclick="openPopup(
+        'French Press Coffee Maker',
+        'french.jpg',
+        '$110',
+        'A classic brewing device that produces rich and full-bodied coffee through immersion brewing.',
+        'Best for bold and full-bodied brews',
+        'Glass carafe with stainless steel frame',
+        '4-cup capacity',
+        'Rich, smooth, low-acid extraction',
+        'Perfect for slow mornings and weekend coffee rituals.',
+        '4.7 ⭐'
+      )">View Product</button>
+    </div>
+
+
+    <div class="bean-card">
+      <img src="pour.jpg" alt="Pour Over Dripper">
+      <h3>Pour Over Dripper</h3>
+      <div class="price">$98</div>
+      <button onclick="openPopup(
+        'Pour Over Dripper',
+        'pour.jpg',
+        '$98',
+        'A simple manual brewing method that creates clean and flavorful coffee.',
+        'Best for bright and clean cups',
+        'Ceramic dripper with heat-resistant finish',
+        'Single-serve brew size',
+        'Balanced extraction with clarity',
+        'Ideal for mindful brewing and tasting different beans.',
+        '4.6 ⭐'
+      )">View Product</button>
+    </div>
+
+
+    <div class="bean-card">
+      <img src="espresso.jpg" alt="Espresso Machine">
+      <h3>Espresso Machine</h3>
+      <div class="price">$220</div>
+      <button onclick="openPopup(
+        'Espresso Machine',
+        'espresso.jpg',
+        '$220',
+        'High-pressure coffee machine designed to make strong and aromatic espresso shots.',
+        'Best for cafe-style coffee at home',
+        'Durable stainless steel body',
+        '15-bar pressure system',
+        'Strong crema and rich flavor',
+        'Perfect for lattes, cappuccinos, and fast morning shots.',
+        '4.8 ⭐'
+      )">View Product</button>
+    </div>
+
+
+    <div class="bean-card">
+      <img src="grind.jpg" alt="Manual Coffee Grinder">
+      <h3>Manual Coffee Grinder</h3>
+      <div class="price">$100</div>
+      <button onclick="openPopup(
+        'Manual Coffee Grinder',
+        'grind.jpg',
+        '$100',
+        'Grind fresh coffee beans before brewing to enjoy maximum aroma and flavour.',
+        'Best for fresh grinding anywhere',
+        'Compact hand grinder with steel burrs',
+        'Adjustable grind settings',
+        'Consistent grind for multiple brew styles',
+        'Great for travel setups and fresh daily brewing.',
+        '4.5 ⭐'
+      )">View Product</button>
+    </div>
+
+
+    <div class="bean-card">
+      <img src="milk.jpg" alt="Milk Frother">
+      <h3>Milk Frother</h3>
+      <div class="price">$105</div>
+      <button onclick="openPopup(
+        'Milk Frother',
+        'milk.jpg',
+        '$105',
+        'Create creamy milk foam for cappuccinos, lattes, and other coffee drinks.',
+        'Best for silky cafe-style milk',
+        'Electric frother with non-stick interior',
+        'Hot and cold frothing modes',
+        'Velvety texture in minutes',
+        'Perfect for cozy cappuccinos and iced lattes alike.',
+        '4.6 ⭐'
+      )">View Product</button>
+    </div>
+
+
+    <div class="bean-card">
+      <img src="scale.jpg" alt="Digital Coffee Scale">
+      <h3>Digital Coffee Scale</h3>
+      <div class="price">$80</div>
+      <button onclick="openPopup(
+        'Digital Coffee Scale',
+        'scale.jpg',
+        '$80',
+        'Measure coffee and water precisely to maintain the perfect brewing ratio.',
+        'Best for accurate brewing control',
+        'Slim water-resistant design',
+        'Built-in timer feature',
+        'Precise pour-over and espresso support',
+        'Ideal for improving consistency in every cup.',
+        '4.7 ⭐'
+      )">View Product</button>
+    </div>
+
+
+
+  
+    </section>
+
+    <div class="popup" id="popup">
+      <div class="popup-content">
+        <span class="close-btn" onclick="closePopup()">
+          <i class="fa-solid fa-xmark"></i>
+        </span>
+
+        <div class="popup-container">
+          <div class="popup-left">
+            <img id="popup-img" alt="">
+          </div>
+
+          <div class="popup-right">
+            <h2 id="popup-name"></h2>
+            <h3 id="popup-price"></h3>
+            <p id="popup-desc"></p>
+            <p id="popup-bestfor"></p>
+            <p id="popup-material"></p>
+            <p id="popup-capacity"></p>
+            <p id="popup-performance"></p>
+            <p id="popup-mood"></p>
+            <p id="popup-rating"></p>
+            <button id="add-to-cart-btn" class="popup-cart-btn" onclick="addToCart()">Add to cart</button>
+            <p id="cart-message" class="cart-message"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-content">
+         <div class="social-icons">
+           <a href="#"><i class="fab fa-instagram"></i></a>
+           <a href="#"><i class="fab fa-facebook"></i></a>
+           <a href="#"><i class="fab fa-twitter"></i></a>
+           <a href="#"><i class="fab fa-youtube"></i></a>     
+         </div>
+         
+         <div class="footer-links">
+           <a href="#">Privacy Policy</a>
+           <a href="#">Terms of Service</a>
+           <a href="#">Cookies</a>  
+         </div>
+         
+         <p>© 2026 VelvetRoast  ☕</p>  
+       </div>
+     </footer>
+
+     <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+      const siteNav = document.querySelector("nav");
+      const navToggle = document.querySelector(".nav-toggle");
+      const navLinks = document.getElementById("primary-navigation");
+      const currentPage = window.location.pathname.split("/").pop() || "firstpage.html";
+
+      if (!document.querySelector(".mobile-nav-backdrop")) {
+        document.body.insertAdjacentHTML("beforeend", '<div class="mobile-nav-backdrop" aria-hidden="true"></div>');
+      }
+
+      if (!document.querySelector(".mobile-bottom-nav")) {
+        document.body.insertAdjacentHTML(
+          "beforeend",
+          `
+            <div class="mobile-bottom-nav" aria-label="Mobile quick navigation">
+              <a href="firstpage.html" class="${currentPage === "firstpage.html" ? "active" : ""}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+              <a href="coffee.html" class="${currentPage === "coffee.html" ? "active" : ""}"><i class="fa-solid fa-mug-hot"></i><span>Coffee</span></a>
+              <a href="menu.html" class="${currentPage === "menu.html" ? "active" : ""}"><i class="fa-solid fa-book-open"></i><span>Menu</span></a>
+              <a href="cart.html" class="${currentPage === "cart.html" ? "active" : ""}"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+            </div>
+          `
+        );
+      }
+
+      const navBackdrop = document.querySelector(".mobile-nav-backdrop");
+
+      if (siteNav && navToggle && navLinks) {
+        function closeMenu() {
+          siteNav.classList.remove("menu-open");
+          document.body.classList.remove("menu-open");
+          navToggle.setAttribute("aria-expanded", "false");
+        }
+
+        navToggle.addEventListener("click", function () {
+          const isOpen = siteNav.classList.toggle("menu-open");
+          document.body.classList.toggle("menu-open", isOpen);
+          navToggle.setAttribute("aria-expanded", String(isOpen));
+        });
+
+        navLinks.querySelectorAll("a").forEach(function (link) {
+          link.addEventListener("click", closeMenu);
+        });
+
+        if (navBackdrop) {
+          navBackdrop.addEventListener("click", closeMenu);
+        }
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            closeMenu();
+          }
+        });
+
+        window.addEventListener("resize", function () {
+          if (window.innerWidth > 768) {
+            closeMenu();
+          }
+        });
+      }
+  </script>
+  <script>
+      let selectedEquipment = null;
+      let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+      function updateCartCount(){
+        const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+        document.getElementById("cart-count").innerText = totalItems;
+      }
+
+      function openPopup(name, img, price, desc, bestfor, material, capacity, performance, mood, rating){
+        selectedEquipment = { name, img, price, quantity: 1 };
+
+        document.getElementById("popup").style.display = "flex";
+        document.getElementById("popup-img").src = img;
+        document.getElementById("popup-img").alt = name;
+        document.getElementById("popup-name").innerText = name;
+        document.getElementById("popup-price").innerText = price;
+        document.getElementById("popup-desc").innerText = desc;
+        document.getElementById("popup-bestfor").innerText = "Best For: " + bestfor;
+        document.getElementById("popup-material").innerText = "Material: " + material;
+        document.getElementById("popup-capacity").innerText = "Details: " + capacity;
+        document.getElementById("popup-performance").innerText = "Highlights: " + performance;
+        document.getElementById("popup-mood").innerText = mood;
+        document.getElementById("popup-rating").innerText = "Rating: " + rating;
+        document.getElementById("cart-message").innerText = "";
+      }
+
+      function closePopup(){
+        document.getElementById("popup").style.display = "none";
+      }
+
+      function addToCart(){
+        if(!selectedEquipment){
+          return;
+        }
+
+        cartItems.push({ ...selectedEquipment });
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        updateCartCount();
+        document.getElementById("cart-message").innerText = selectedEquipment.name + " added to cart.";
+      }
+
+      updateCartCount();
+     </script>
+  </body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register | VelvetRoast</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
+<link rel="stylesheet" href="final.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<nav>
+
+<h2>VelvetRoast</h2>
+
+<button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+<i class="fa-solid fa-bars"></i>
+</button>
+
+<ul id="primary-navigation">
+
+<li><a href="firstpage.html">Home</a></li>
+
+<li class="dropdown">
+<a href="#">Coffee</a>
+
+<ul class="dropdown-menu">
+<li><a href="brew.html">Brewing Equipments</a></li>
+<li><a href="coffee.html">Coffee Beans</a></li>
+<li><a href="origin.html">Coffee Origin</a></li>
+</ul>
+
+</li>
+
+<li><a href="menu.html">Menu</a></li>
+<li><a href="offers.html">Offers</a></li>
+<li><a href="events.html">Events</a></li>
+<li><a href="contact.html">Contact</a></li>
+
+</ul>
+
+<div class="nav-icons">
+<a href="cart.html" class="cart-link" aria-label="Cart">
+<i class="fa-solid fa-cart-shopping"></i>
+<span id="cart-count" class="cart-count">0</span>
+</a>
+<a href="login.html" aria-label="Login">
+<i class="fa-solid fa-user"></i>
+</a>
+</div>
+
+</nav>
+
+
+<section class="form-section">
+
+<div class="form-box register-form-box">
+
+<h2>Create Account</h2>
+
+<form id="register-form" novalidate>
+
+<label for="name">Full Name</label>
+<input type="text" id="name" placeholder="Enter your name" autocomplete="name" maxlength="80" required>
+
+<label for="email">Email</label>
+<input type="email" id="email" placeholder="Enter your email" autocomplete="email" required>
+
+<label for="phone">Phone Number</label>
+<input type="tel" id="phone" placeholder="Enter your phone number" autocomplete="tel" inputmode="tel" required>
+
+<label for="dob">Date of Birth</label>
+<input type="date" id="dob" required>
+<p id="birthday-offer-status" class="register-offer-status"></p>
+
+<label for="password">Password</label>
+<input type="password" id="password" placeholder="Create password" autocomplete="new-password" minlength="10" required>
+<p id="password-help" class="form-help">Use at least 10 characters with uppercase, lowercase, a number, and a special symbol.</p>
+
+<label for="confirmPassword">Confirm Password</label>
+<input type="password" id="confirmPassword" placeholder="Confirm password" autocomplete="new-password" minlength="10" required>
+
+<p id="error" class="form-message error" aria-live="polite"></p>
+
+<button type="submit">Register</button>
+
+<p>
+Already have an account?
+<a href="login.html">Login</a>
+</p>
+
+</form>
+
+</div>
+
+</section>
+
+
+<footer>
+
+<div class="footer-content">
+
+<div class="social-icons">
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="#"><i class="fab fa-facebook"></i></a>
+<a href="#"><i class="fab fa-twitter"></i></a>
+<a href="#"><i class="fab fa-youtube"></i></a>
+</div>
+
+<div class="footer-links">
+<a href="#">Privacy Policy</a>
+<a href="#">Terms of Service</a>
+<a href="#">Cookies</a>
+</div>
+
+<p>© 2026 VelvetRoast ☕</p>
+
+</div>
+
+</footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+const siteNav = document.querySelector("nav");
+const navToggle = document.querySelector(".nav-toggle");
+const navLinks = document.getElementById("primary-navigation");
+const currentPage = window.location.pathname.split("/").pop() || "firstpage.html";
+
+if (!document.querySelector(".mobile-nav-backdrop")) {
+document.body.insertAdjacentHTML("beforeend", '<div class="mobile-nav-backdrop" aria-hidden="true"></div>');
+}
+
+if (!document.querySelector(".mobile-bottom-nav")) {
+document.body.insertAdjacentHTML(
+  "beforeend",
+  `
+    <div class="mobile-bottom-nav" aria-label="Mobile quick navigation">
+      <a href="firstpage.html" class="${currentPage === "firstpage.html" ? "active" : ""}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+      <a href="coffee.html" class="${currentPage === "coffee.html" ? "active" : ""}"><i class="fa-solid fa-mug-hot"></i><span>Coffee</span></a>
+      <a href="menu.html" class="${currentPage === "menu.html" ? "active" : ""}"><i class="fa-solid fa-book-open"></i><span>Menu</span></a>
+      <a href="cart.html" class="${currentPage === "cart.html" ? "active" : ""}"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+    </div>
+  `
+);
+}
+
+const navBackdrop = document.querySelector(".mobile-nav-backdrop");
+
+if (siteNav && navToggle && navLinks) {
+function closeMenu() {
+siteNav.classList.remove("menu-open");
+document.body.classList.remove("menu-open");
+navToggle.setAttribute("aria-expanded", "false");
+}
+
+navToggle.addEventListener("click", function () {
+const isOpen = siteNav.classList.toggle("menu-open");
+document.body.classList.toggle("menu-open", isOpen);
+navToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+navLinks.querySelectorAll("a").forEach(function (link) {
+link.addEventListener("click", closeMenu);
+});
+
+if (navBackdrop) {
+navBackdrop.addEventListener("click", closeMenu);
+}
+
+document.addEventListener("keydown", function (event) {
+if (event.key === "Escape") {
+closeMenu();
+}
+});
+
+window.addEventListener("resize", function () {
+if (window.innerWidth > 768) {
+closeMenu();
+}
+});
+}
+  </script>
+  <script>
+
+const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+document.getElementById("cart-count").innerText = totalItems;
+const registerForm = document.getElementById("register-form");
+const dobInput = document.getElementById("dob");
+const birthdayOfferStatus = document.getElementById("birthday-offer-status");
+const registerQuery = new URLSearchParams(window.location.search);
+const requestedOffer = registerQuery.get("offer");
+const errorMessage = document.getElementById("error");
+
+dobInput.max = new Date().toISOString().split("T")[0];
+
+function normalizeEmail(value){
+return value.trim().toLowerCase();
+}
+
+function normalizeName(value){
+return value.trim().replace(/\s+/g, " ");
+}
+
+function normalizePhone(value){
+return value.replace(/[^\d+]/g, "");
+}
+
+function isValidEmail(value){
+return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function isValidPhone(value){
+return /^\+?\d{8,15}$/.test(value);
+}
+
+function isStrongPassword(value){
+return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/.test(value);
+}
+
+async function hashValue(value, salt){
+const encoded = new TextEncoder().encode(value + salt);
+const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
+return Array.from(new Uint8Array(hashBuffer))
+  .map(byte => byte.toString(16).padStart(2, "0"))
+  .join("");
+}
+
+function createSalt(){
+const values = crypto.getRandomValues(new Uint8Array(16));
+return Array.from(values)
+  .map(byte => byte.toString(16).padStart(2, "0"))
+  .join("");
+}
+
+function updateBirthdayOfferStatus() {
+const dobValue = dobInput.value;
+
+if(requestedOffer !== "birthday"){
+birthdayOfferStatus.innerText = "";
+birthdayOfferStatus.className = "register-offer-status";
+return;
+}
+
+if(dobValue === ""){
+birthdayOfferStatus.innerText = "Enter your date of birth to check whether the BIRTHBREW birthday offer is active for you.";
+birthdayOfferStatus.className = "register-offer-status";
+return;
+}
+
+const birthDate = new Date(dobValue);
+const today = new Date();
+const isBirthdayMonth = birthDate.getMonth() === today.getMonth();
+const birthMonthName = birthDate.toLocaleString("en-US", { month: "long" });
+
+if(isBirthdayMonth){
+birthdayOfferStatus.innerText = "Great news. Your birth month matches this month, so code BIRTHBREW is available after registration.";
+birthdayOfferStatus.className = "register-offer-status eligible";
+return;
+}
+
+birthdayOfferStatus.innerText = "Your birthday offer unlocks in " + birthMonthName + ". Register now and use code BIRTHBREW during your birthday month.";
+birthdayOfferStatus.className = "register-offer-status waiting";
+}
+
+dobInput.addEventListener("input", updateBirthdayOfferStatus);
+updateBirthdayOfferStatus();
+
+async function registerUser(){
+
+const name = normalizeName(document.getElementById("name").value);
+const email = normalizeEmail(document.getElementById("email").value);
+const phone = normalizePhone(document.getElementById("phone").value);
+const dob = document.getElementById("dob").value;
+const password = document.getElementById("password").value;
+const confirmPassword = document.getElementById("confirmPassword").value;
+const existingEmail = normalizeEmail(localStorage.getItem("userEmail") || "");
+
+errorMessage.innerText = "";
+
+if(name === "" || name.length < 2){
+
+errorMessage.innerText = "Please enter your full name.";
+
+return;
+
+}
+
+if(!isValidEmail(email)){
+
+errorMessage.innerText = "Please enter a valid email address.";
+
+return;
+
+}
+
+if(existingEmail && email === existingEmail){
+
+errorMessage.innerText = "An account with this email already exists.";
+
+return;
+
+}
+
+if(!isValidPhone(phone)){
+
+errorMessage.innerText = "Please enter a valid phone number.";
+
+return;
+
+}
+
+if(dob.trim() === ""){
+
+errorMessage.innerText = "Please select your date of birth.";
+
+return;
+
+}
+
+if(new Date(dob) > new Date()){
+
+errorMessage.innerText = "Date of birth cannot be in the future.";
+
+return;
+
+}
+
+if(!isStrongPassword(password)){
+
+errorMessage.innerText = "Password must be at least 10 characters and include uppercase, lowercase, a number, and a special symbol.";
+
+return;
+
+}
+
+if(password !== confirmPassword){
+
+errorMessage.innerText = "Passwords do not match.";
+
+return;
+
+}
+
+try {
+  const response = await fetch("http://localhost:3000/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, phone, dob, password })
+  });
+  
+  const data = await response.json();
+  
+  if (response.ok) {
+    if(requestedOffer === "birthday"){
+      const birthDate = new Date(dob);
+      const today = new Date();
+      if(birthDate.getMonth() === today.getMonth()){
+        localStorage.setItem("birthdayOfferCode", "BIRTHBREW");
+      }else{
+        localStorage.removeItem("birthdayOfferCode");
+      }
+    }
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("loginSecurityState");
+    localStorage.removeItem("userEmail");
+    
+    alert("Registration Successful!");
+    window.location.href = "login.html";
+  } else {
+    errorMessage.innerText = data.error || "Registration failed.";
+  }
+} catch (err) {
+  errorMessage.innerText = "Error connecting to server.";
+}
+
+}
+
+registerForm.addEventListener("submit", async function(event){
+event.preventDefault();
+await registerUser();
+});
+
+</script>
+
+</body>
+</html>

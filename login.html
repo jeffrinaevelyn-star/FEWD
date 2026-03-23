@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | VelvetRoast</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
+<link rel="stylesheet" href="final.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<nav>
+
+<h2>VelvetRoast</h2>
+
+<button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+<i class="fa-solid fa-bars"></i>
+</button>
+
+<ul id="primary-navigation">
+<li><a href="firstpage.html">Home</a></li>
+
+<li class="dropdown">
+<a href="#">Coffee</a>
+
+<ul class="dropdown-menu">
+<li><a href="brew.html">Brewing Equipments</a></li>
+<li><a href="coffee.html">Coffee Beans</a></li>
+<li><a href="origin.html">Coffee Origin</a></li>
+</ul>
+
+</li>
+
+<li><a href="menu.html">Menu</a></li>
+<li><a href="offers.html">Offers</a></li>
+<li><a href="events.html">Events</a></li>
+<li><a href="contact.html">Contact</a></li>
+
+</ul>
+
+<div class="nav-icons">
+<a href="cart.html" class="cart-link" aria-label="Cart">
+<i class="fa-solid fa-cart-shopping"></i>
+<span id="cart-count" class="cart-count">0</span>
+</a>
+<a href="login.html" aria-label="Login">
+<i class="fa-solid fa-user"></i>
+</a>
+</div>
+
+</nav>
+
+
+<section class="form-section">
+
+<div class="form-box">
+
+<h2>Login</h2>
+
+<form id="login-form" novalidate>
+
+<label for="email">Email</label>
+<input type="email" id="email" placeholder="Email Address" autocomplete="username" required>
+
+<label for="password">Password</label>
+<input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
+
+<p class="form-help">Too many failed attempts will temporarily lock sign-in for your account.</p>
+<p id="error" class="form-message error" aria-live="polite"></p>
+
+<button type="submit">Login</button>
+
+<p>
+Don't have an account?
+<a href="register.html">Register</a>
+</p>
+
+</form>
+
+</div>
+
+</section>
+
+
+<footer>
+
+<div class="footer-content">
+
+<div class="social-icons">
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="#"><i class="fab fa-facebook"></i></a>
+<a href="#"><i class="fab fa-twitter"></i></a>
+<a href="#"><i class="fab fa-youtube"></i></a>
+</div>
+
+<div class="footer-links">
+<a href="#">Privacy Policy</a>
+<a href="#">Terms of Service</a>
+<a href="#">Cookies</a>
+</div>
+
+<p>© 2026 VelvetRoast ☕</p>
+
+</div>
+
+</footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+const siteNav = document.querySelector("nav");
+const navToggle = document.querySelector(".nav-toggle");
+const navLinks = document.getElementById("primary-navigation");
+const currentPage = window.location.pathname.split("/").pop() || "firstpage.html";
+
+if (!document.querySelector(".mobile-nav-backdrop")) {
+document.body.insertAdjacentHTML("beforeend", '<div class="mobile-nav-backdrop" aria-hidden="true"></div>');
+}
+
+if (!document.querySelector(".mobile-bottom-nav")) {
+document.body.insertAdjacentHTML(
+  "beforeend",
+  `
+    <div class="mobile-bottom-nav" aria-label="Mobile quick navigation">
+      <a href="firstpage.html" class="${currentPage === "firstpage.html" ? "active" : ""}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+      <a href="coffee.html" class="${currentPage === "coffee.html" ? "active" : ""}"><i class="fa-solid fa-mug-hot"></i><span>Coffee</span></a>
+      <a href="menu.html" class="${currentPage === "menu.html" ? "active" : ""}"><i class="fa-solid fa-book-open"></i><span>Menu</span></a>
+      <a href="cart.html" class="${currentPage === "cart.html" ? "active" : ""}"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+    </div>
+  `
+);
+}
+
+const navBackdrop = document.querySelector(".mobile-nav-backdrop");
+
+if (siteNav && navToggle && navLinks) {
+function closeMenu() {
+siteNav.classList.remove("menu-open");
+document.body.classList.remove("menu-open");
+navToggle.setAttribute("aria-expanded", "false");
+}
+
+navToggle.addEventListener("click", function () {
+const isOpen = siteNav.classList.toggle("menu-open");
+document.body.classList.toggle("menu-open", isOpen);
+navToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+navLinks.querySelectorAll("a").forEach(function (link) {
+link.addEventListener("click", closeMenu);
+});
+
+if (navBackdrop) {
+navBackdrop.addEventListener("click", closeMenu);
+}
+
+document.addEventListener("keydown", function (event) {
+if (event.key === "Escape") {
+closeMenu();
+}
+});
+
+window.addEventListener("resize", function () {
+if (window.innerWidth > 768) {
+closeMenu();
+}
+});
+}
+  </script>
+  <script>
+
+const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+document.getElementById("cart-count").innerText = totalItems;
+const loginForm = document.getElementById("login-form");
+const errorMessage = document.getElementById("error");
+const LOCKOUT_KEY = "loginSecurityState";
+const LOCKOUT_WINDOW_MS = 10 * 60 * 1000;
+const LOCKOUT_DURATION_MS = 10 * 60 * 1000;
+const MAX_FAILED_ATTEMPTS = 5;
+
+function normalizeEmail(value){
+return value.trim().toLowerCase();
+}
+
+function readSecurityState(){
+return JSON.parse(localStorage.getItem(LOCKOUT_KEY)) || { attempts: [], lockedUntil: 0 };
+}
+
+function saveSecurityState(state){
+localStorage.setItem(LOCKOUT_KEY, JSON.stringify(state));
+}
+
+function clearSecurityState(){
+localStorage.removeItem(LOCKOUT_KEY);
+}
+
+function getRemainingLockoutMinutes(lockedUntil){
+return Math.ceil((lockedUntil - Date.now()) / 60000);
+}
+
+async function hashValue(value, salt){
+const encoded = new TextEncoder().encode(value + salt);
+const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
+return Array.from(new Uint8Array(hashBuffer))
+  .map(byte => byte.toString(16).padStart(2, "0"))
+  .join("");
+}
+
+function createSalt(){
+const values = crypto.getRandomValues(new Uint8Array(16));
+return Array.from(values)
+  .map(byte => byte.toString(16).padStart(2, "0"))
+  .join("");
+}
+
+async function migrateLegacyPassword(plainPassword){
+const salt = createSalt();
+const passwordHash = await hashValue(plainPassword, salt);
+localStorage.setItem("userPasswordSalt", salt);
+localStorage.setItem("userPasswordHash", passwordHash);
+localStorage.removeItem("userPassword");
+}
+
+async function isPasswordValid(enteredPassword){
+const savedHash = localStorage.getItem("userPasswordHash");
+const savedSalt = localStorage.getItem("userPasswordSalt");
+const legacyPassword = localStorage.getItem("userPassword");
+
+if(savedHash && savedSalt){
+const enteredHash = await hashValue(enteredPassword, savedSalt);
+return enteredHash === savedHash;
+}
+
+if(legacyPassword && enteredPassword === legacyPassword){
+await migrateLegacyPassword(legacyPassword);
+return true;
+}
+
+return false;
+}
+
+function recordFailedAttempt(){
+const state = readSecurityState();
+const now = Date.now();
+const attempts = state.attempts.filter(attempt => now - attempt < LOCKOUT_WINDOW_MS);
+attempts.push(now);
+state.attempts = attempts;
+
+if(attempts.length >= MAX_FAILED_ATTEMPTS){
+state.lockedUntil = now + LOCKOUT_DURATION_MS;
+}
+
+saveSecurityState(state);
+return state;
+}
+
+async function checkLogin(){
+const enteredEmail = normalizeEmail(document.getElementById("email").value);
+const enteredPassword = document.getElementById("password").value;
+const securityState = readSecurityState();
+
+errorMessage.innerText = "";
+
+if(securityState.lockedUntil && securityState.lockedUntil > Date.now()){
+errorMessage.innerText = "Too many failed attempts. Try again in " + getRemainingLockoutMinutes(securityState.lockedUntil) + " minute(s).";
+return;
+}
+
+if(!enteredEmail || !enteredPassword){
+errorMessage.innerText = "Enter both your email and password.";
+return;
+}
+
+try {
+  const response = await fetch("http://localhost:3000/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: enteredEmail, password: enteredPassword })
+  });
+  
+  const data = await response.json();
+  
+  if (response.ok) {
+    clearSecurityState();
+    alert("Login Successful!");
+    localStorage.setItem("loggedIn","true");
+    localStorage.setItem("userName", data.name);
+    window.location.href = "firstpage.html";
+  } else {
+    const updatedState = recordFailedAttempt();
+    if(updatedState.lockedUntil && updatedState.lockedUntil > Date.now()){
+      errorMessage.innerText = "Too many failed attempts. Try again in " + getRemainingLockoutMinutes(updatedState.lockedUntil) + " minute(s).";
+    } else {
+      errorMessage.innerText = data.error || "Incorrect email or password.";
+    }
+  }
+} catch (err) {
+  errorMessage.innerText = "Error connecting to server.";
+}
+}
+
+loginForm.addEventListener("submit", async function(event){
+event.preventDefault();
+await checkLogin();
+});
+
+</script>
+
+</body>
+</html>
