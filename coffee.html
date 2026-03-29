@@ -122,6 +122,7 @@
       'Light Roast',
       'Medium',
       'Chocolate, Citrus, Honey',
+      'Best brewed as pour-over, AeroPress, or drip coffee.',
       'Perfect for calm mornings and relaxed evenings.',
       '4.7 ⭐'
     )">View Product</button>
@@ -147,6 +148,7 @@
       'Dark Roast',
       'Strong',
       'Dark Chocolate, Nutty',
+      'Best brewed as espresso, moka pot, or strong French press.',
       'Best for energy boosts and busy workdays.',
       '4.5 ⭐'
     )">View Product</button>
@@ -172,6 +174,7 @@
       'Light Roast',
       'Medium',
       'Berry, Floral, Citrus',
+      'Best brewed as pour-over, Chemex, or cold brew.',
       'Great for creative moods and inspiration.',
       '4.8 ⭐'
     )">View Product</button>
@@ -190,13 +193,14 @@
 
     <button onclick="openPopup(
       'Colombian Beans',
-      'Screenshot 2026-03-13 at 9.33.36 AM.png',
+      'Screenshot 2026-03-13 at 9.33.36 AM.png',
       'S$19 / 250g',
       'Well-balanced beans with caramel sweetness and smooth cocoa finish.',
       'Colombia – Huila Region',
       'Medium Roast',
       'Medium',
       'Caramel, Cocoa, Almond',
+      'Best brewed as drip coffee, French press, or espresso.',
       'Ideal for peaceful coffee breaks.',
       '4.6 ⭐'
     )">View Product</button>
@@ -220,6 +224,7 @@
   'Medium Roast',
   'Mild',
   'Hazelnut, Milk Chocolate',
+  'Best brewed as espresso, moka pot, or French press.',
   'Perfect for relaxed afternoons and casual coffee moments.',
   '4.6 ⭐'
   )">View Product</button>
@@ -246,6 +251,7 @@
   'Medium Roast',
   'Strong',
   'Citrus, Blackcurrant, Berry',
+  'Best brewed as pour-over, AeroPress, or flash brew.',
   'Great for energetic mornings and productive work sessions.',
   '4.8 ⭐'
   )">View Product</button>
@@ -272,6 +278,7 @@
   'Medium Dark Roast',
   'Medium Strong',
   'Cocoa, Spice, Smoky',
+  'Best brewed as French press, drip coffee, or espresso.',
   'Ideal for deep focus and thoughtful evenings.',
   '4.7 ⭐'
   )">View Product</button>
@@ -302,6 +309,7 @@
       'Medium Roast',
       'Medium',
       'Cocoa, Caramel, Citrus',
+      'Best brewed as drip coffee, pour-over, or espresso.',
       'Perfect for daily brews with a polished cafe-style cup.',
       '4.8 ⭐'
     )">View Product</button>
@@ -323,6 +331,7 @@
       'Dark Roast',
       'Strong',
       'Dark Chocolate, Spice, Toasted Nut',
+      'Best brewed as espresso, moka pot, or rich French press.',
       'Best for focused mornings and rich milk-based drinks.',
       '4.7 ⭐'
     )">View Product</button>
@@ -344,6 +353,7 @@
       'Light Medium Roast',
       'Medium',
       'Berry, Floral, Honey',
+      'Best brewed as pour-over, Chemex, or AeroPress.',
       'Lovely for pour-over mornings and slow weekend rituals.',
       '4.9 ⭐'
     )">View Product</button>
@@ -383,6 +393,8 @@
         <p id="popup-strength"></p>
 
         <p id="popup-flavor"></p>
+
+        <p id="popup-brewing"></p>
 
         <p id="popup-mood"></p>
 
@@ -493,7 +505,7 @@
     document.getElementById("cart-count").innerText = totalItems;
   }
 
-  function openPopup(name, img, price, desc, origin, roast, strength, flavor, mood, rating){
+  function openPopup(name, img, price, desc, origin, roast, strength, flavor, brewing, mood, rating){
     selectedBean = { name, img, price, quantity: 1 };
 
     document.getElementById("popup").style.display="flex";
@@ -511,6 +523,8 @@
     document.getElementById("popup-strength").innerText = "Strength: " + strength;
 
     document.getElementById("popup-flavor").innerText = "Flavor Notes: " + flavor;
+
+    document.getElementById("popup-brewing").innerText = "Recommended Brewing: " + brewing;
 
     document.getElementById("popup-mood").innerText = mood;
 

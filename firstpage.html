@@ -51,7 +51,29 @@
 
 
   <section class="hero">
-    <div>
+    <div id="heroSlideshow" class="carousel slide carousel-fade hero-slideshow" data-bs-ride="carousel" data-bs-interval="4000" aria-label="VelvetRoast highlights slideshow">
+      <div class="carousel-indicators hero-indicators">
+        <button type="button" data-bs-target="#heroSlideshow" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Brewing equipment"></button>
+        <button type="button" data-bs-target="#heroSlideshow" data-bs-slide-to="1" aria-label="Coffee events"></button>
+        <button type="button" data-bs-target="#heroSlideshow" data-bs-slide-to="2" aria-label="Brewing class"></button>
+      </div>
+
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="equip.jpg" class="d-block w-100" alt="Coffee brewing equipment arranged on a bar">
+        </div>
+        <div class="carousel-item">
+          <img src="events.jpg" class="d-block w-100" alt="Coffee event setup with guests and drinks">
+        </div>
+        <div class="carousel-item">
+          <img src="class.jpg" class="d-block w-100" alt="Hands-on coffee brewing class in progress">
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
       <h1>Welcome to VelvetRoast </h1>
       <p>Elegance in every sip</p>
       <div class="hero-buttons">

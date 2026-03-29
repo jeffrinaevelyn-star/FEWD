@@ -50,6 +50,19 @@
       <h1>Brewing Equipment</h1>
       <p>Discover premium tools that help you craft cafe-style coffee at home.</p>
     </section>
+
+    <section class="equipment-search-section">
+      <div class="menu-search equipment-search" role="search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input
+          type="search"
+          id="equipment-search"
+          placeholder="Search brewing tools"
+          aria-label="Search brewing equipment"
+        >
+      </div>
+      <p id="equipment-search-empty" class="equipment-search-empty" hidden>No equipment matched your search.</p>
+    </section>
   
   
   <!-- PRODUCTS -->
@@ -287,6 +300,9 @@
   <script>
       let selectedEquipment = null;
       let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      const equipmentSearchInput = document.getElementById("equipment-search");
+      const equipmentCards = Array.from(document.querySelectorAll(".bean-products .bean-card"));
+      const equipmentSearchEmpty = document.getElementById("equipment-search-empty");
 
       function updateCartCount(){
         const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
@@ -324,6 +340,27 @@
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
         updateCartCount();
         document.getElementById("cart-message").innerText = selectedEquipment.name + " added to cart.";
+      }
+
+      function filterEquipment(){
+        const query = (equipmentSearchInput.value || "").trim().toLowerCase();
+        let visibleCount = 0;
+
+        equipmentCards.forEach(function(card){
+          const cardText = card.innerText.toLowerCase();
+          const isMatch = cardText.includes(query);
+          card.style.display = isMatch ? "" : "none";
+
+          if (isMatch) {
+            visibleCount++;
+          }
+        });
+
+        equipmentSearchEmpty.hidden = visibleCount !== 0;
+      }
+
+      if (equipmentSearchInput) {
+        equipmentSearchInput.addEventListener("input", filterEquipment);
       }
 
       updateCartCount();
