@@ -62,17 +62,17 @@
     <div class="offers-grid">
       <article class="offer-card offer-card-accent">
         <span class="offer-badge">Birthday</span>
-        <h3>Birthday Drink Treat</h3>
-        <p>Celebrate your birthday month with one complimentary handcrafted coffee when you show your registered account at checkout.</p>
+        <h3>Birthday Month Discount</h3>
+        <p>Celebrate your birthday month with a special 20% discount when you use your registered account at checkout.</p>
         <div class="offer-code-box">
           <span class="offer-code-label">Code</span>
-          <strong>BIRTHBREW</strong>
+          <strong>BIRTHDAY20</strong>
         </div>
         <div class="offer-details">
-          <span><i class="fa-solid fa-cake-candles"></i> One free birthday drink for members</span>
+          <span><i class="fa-solid fa-cake-candles"></i> 20% off for registered members</span>
           <span><i class="fa-regular fa-calendar"></i> Valid during your birthday month</span>
         </div>
-        <a href="register.html?offer=birthday">Claim Offer</a>
+        <a id="birthday-offer-link" href="register.html?offer=birthday">Claim Offer</a>
       </article>
 
       <article class="offer-card">
@@ -217,9 +217,30 @@
     }
   </script>
   <script>
-    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    function syncActiveCartSession() {
+      const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+      const userEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+
+      if (loggedIn && userEmail) {
+        const savedCart = JSON.parse(localStorage.getItem("cartItems:" + userEmail) || "[]");
+        localStorage.setItem("cartItems", JSON.stringify(savedCart));
+        return savedCart;
+      }
+
+      localStorage.setItem("cartItems", JSON.stringify([]));
+      localStorage.removeItem("appliedVoucher");
+      return [];
+    }
+
+    const cartItems = syncActiveCartSession();
     const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
     document.getElementById("cart-count").innerText = totalItems;
+    const birthdayOfferLink = document.getElementById("birthday-offer-link");
+
+    if (birthdayOfferLink) {
+      const hasAccountContext = sessionStorage.getItem("loggedIn") === "true" || !!localStorage.getItem("userEmail");
+      birthdayOfferLink.href = hasAccountContext ? "cart.html" : "register.html?offer=birthday";
+    }
   </script>
 </body>
 </html>

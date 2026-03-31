@@ -181,7 +181,42 @@ closeMenu();
   </script>
   <script>
 
-const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+function getUserCartStorageKey(email){
+return "cartItems:" + normalizeEmail(email);
+}
+
+function getUserVoucherStorageKey(email){
+return "appliedVoucher:" + normalizeEmail(email);
+}
+
+function initializeGuestCart(){
+localStorage.setItem("cartItems", JSON.stringify([]));
+localStorage.removeItem("appliedVoucher");
+return [];
+}
+
+function syncActiveCartSession(){
+const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+const userEmail = normalizeEmail(localStorage.getItem("userEmail") || "");
+
+if(loggedIn && userEmail){
+const savedCart = JSON.parse(localStorage.getItem(getUserCartStorageKey(userEmail)) || "[]");
+const savedVoucher = JSON.parse(localStorage.getItem(getUserVoucherStorageKey(userEmail)) || "null");
+localStorage.setItem("cartItems", JSON.stringify(savedCart));
+
+if(savedVoucher){
+localStorage.setItem("appliedVoucher", JSON.stringify(savedVoucher));
+}else{
+localStorage.removeItem("appliedVoucher");
+}
+
+return savedCart;
+}
+
+return initializeGuestCart();
+}
+
+const cartItems = syncActiveCartSession();
 const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
 document.getElementById("cart-count").innerText = totalItems;
 const loginForm = document.getElementById("login-form");
@@ -193,6 +228,36 @@ const MAX_FAILED_ATTEMPTS = 5;
 
 function normalizeEmail(value){
 return value.trim().toLowerCase();
+}
+
+function isBirthdayOfferEligible(dob){
+if(!dob){
+return false;
+}
+
+const birthDate = new Date(dob + "T00:00:00");
+const today = new Date();
+return birthDate.getMonth() === today.getMonth();
+}
+
+function syncBirthdayOfferEligibility(dob){
+if(dob){
+localStorage.setItem("userDob", dob);
+}
+
+if(isBirthdayOfferEligible(dob)){
+localStorage.setItem("birthdayOfferCode", "BIRTHDAY20");
+}else{
+localStorage.removeItem("birthdayOfferCode");
+}
+}
+
+function showLoginMessage(message, shouldAlert){
+errorMessage.innerText = message;
+
+if(shouldAlert){
+alert(message);
+}
 }
 
 function readSecurityState(){
@@ -224,6 +289,10 @@ const values = crypto.getRandomValues(new Uint8Array(16));
 return Array.from(values)
   .map(byte => byte.toString(16).padStart(2, "0"))
   .join("");
+}
+
+function getStoredUsers(){
+return JSON.parse(localStorage.getItem("velvetUsers") || "[]");
 }
 
 async function migrateLegacyPassword(plainPassword){
@@ -275,40 +344,58 @@ const securityState = readSecurityState();
 errorMessage.innerText = "";
 
 if(securityState.lockedUntil && securityState.lockedUntil > Date.now()){
-errorMessage.innerText = "Too many failed attempts. Try again in " + getRemainingLockoutMinutes(securityState.lockedUntil) + " minute(s).";
+showLoginMessage("Too many failed attempts. Try again in " + getRemainingLockoutMinutes(securityState.lockedUntil) + " minute(s).", true);
 return;
 }
 
 if(!enteredEmail || !enteredPassword){
-errorMessage.innerText = "Enter both your email and password.";
+showLoginMessage("Enter both your email and password.", true);
 return;
 }
 
 try {
-  const response = await fetch("http://localhost:3000/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: enteredEmail, password: enteredPassword })
+  const users = getStoredUsers();
+  const user = users.find(function(candidate){
+    return normalizeEmail(candidate.email) === enteredEmail;
   });
-  
-  const data = await response.json();
-  
-  if (response.ok) {
+
+  if (!user) {
+    const updatedState = recordFailedAttempt();
+    if(updatedState.lockedUntil && updatedState.lockedUntil > Date.now()){
+      showLoginMessage("Too many failed attempts. Try again in " + getRemainingLockoutMinutes(updatedState.lockedUntil) + " minute(s).", true);
+    } else {
+      showLoginMessage("No account found. Please register first.", true);
+    }
+    return;
+  }
+
+  const enteredHash = await hashValue(enteredPassword, user.passwordSalt);
+
+  if (enteredHash === user.passwordHash) {
     clearSecurityState();
     alert("Login Successful!");
-    localStorage.setItem("loggedIn","true");
-    localStorage.setItem("userName", data.name);
+    sessionStorage.setItem("loggedIn","true");
+    localStorage.setItem("userName", user.name);
+    localStorage.setItem("userEmail", user.email);
+    syncBirthdayOfferEligibility(user.dob);
+    localStorage.setItem("cartItems", localStorage.getItem(getUserCartStorageKey(user.email)) || "[]");
+    const savedVoucher = JSON.parse(localStorage.getItem(getUserVoucherStorageKey(user.email)) || "null");
+    if(savedVoucher){
+      localStorage.setItem("appliedVoucher", JSON.stringify(savedVoucher));
+    }else{
+      localStorage.removeItem("appliedVoucher");
+    }
     window.location.href = "firstpage.html";
   } else {
     const updatedState = recordFailedAttempt();
     if(updatedState.lockedUntil && updatedState.lockedUntil > Date.now()){
-      errorMessage.innerText = "Too many failed attempts. Try again in " + getRemainingLockoutMinutes(updatedState.lockedUntil) + " minute(s).";
+      showLoginMessage("Too many failed attempts. Try again in " + getRemainingLockoutMinutes(updatedState.lockedUntil) + " minute(s).", true);
     } else {
-      errorMessage.innerText = data.error || "Incorrect email or password.";
+      showLoginMessage("Incorrect email or password.", true);
     }
   }
 } catch (err) {
-  errorMessage.innerText = "Error connecting to server.";
+  showLoginMessage("Login failed. Please try again.", true);
 }
 }
 

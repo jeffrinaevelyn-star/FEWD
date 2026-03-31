@@ -202,7 +202,74 @@
     }
   </script>
   <script>
-    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    function normalizeEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function getUserCartStorageKey(email) {
+      return "cartItems:" + normalizeEmail(email);
+    }
+
+    function getUserVoucherStorageKey(email) {
+      return "appliedVoucher:" + normalizeEmail(email);
+    }
+
+    function initializeGuestCart() {
+      localStorage.setItem("cartItems", JSON.stringify([]));
+      localStorage.removeItem("appliedVoucher");
+      return [];
+    }
+
+    function syncActiveCartSession() {
+      const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+      const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+
+      if (loggedIn && userEmail) {
+        const savedCart = JSON.parse(localStorage.getItem(getUserCartStorageKey(userEmail)) || "[]");
+        const savedVoucher = JSON.parse(localStorage.getItem(getUserVoucherStorageKey(userEmail)) || "null");
+        localStorage.setItem("cartItems", JSON.stringify(savedCart));
+
+        if (savedVoucher) {
+          localStorage.setItem("appliedVoucher", JSON.stringify(savedVoucher));
+        } else {
+          localStorage.removeItem("appliedVoucher");
+        }
+
+        return savedCart;
+      }
+
+      return initializeGuestCart();
+    }
+
+    function persistCartItems() {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+      const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+      const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+      if (loggedIn && userEmail) {
+        localStorage.setItem(getUserCartStorageKey(userEmail), JSON.stringify(cartItems));
+      }
+    }
+
+    function persistAppliedVoucher() {
+      if (appliedVoucher) {
+        localStorage.setItem("appliedVoucher", JSON.stringify(appliedVoucher));
+      } else {
+        localStorage.removeItem("appliedVoucher");
+      }
+
+      const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+      const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+      if (loggedIn && userEmail) {
+        if (appliedVoucher) {
+          localStorage.setItem(getUserVoucherStorageKey(userEmail), JSON.stringify(appliedVoucher));
+        } else {
+          localStorage.removeItem(getUserVoucherStorageKey(userEmail));
+        }
+      }
+    }
+
+    let cartItems = syncActiveCartSession();
     const voucherCatalog = {
       VELVET15: {
         discountPercent: 0.15,
@@ -216,15 +283,26 @@
         discountPercent: 0.10,
         message: "FESTIVE10 applied for 10% off your subtotal."
       },
-      BIRTHBREW: {
-        discountPercent: 0.25,
-        message: "BIRTHBREW applied for 25% off your subtotal."
+      BIRTHDAY20: {
+        discountPercent: 0.20,
+        message: "BIRTHDAY20 applied for 20% off your subtotal."
       }
     };
     let appliedVoucher = JSON.parse(localStorage.getItem("appliedVoucher")) || null;
 
     function getDefaultVoucherMessage() {
-      return "Available codes: `VELVET15`, `STUDENT20`, `FESTIVE10`, and `BIRTHBREW` when eligible.";
+      return "Available codes: `VELVET15`, `STUDENT20`, `FESTIVE10`, and `BIRTHDAY20` when eligible.";
+    }
+
+    function isBirthdayOfferEligible() {
+      const storedDob = localStorage.getItem("userDob");
+      if (!storedDob) {
+        return false;
+      }
+
+      const birthDate = new Date(storedDob + "T00:00:00");
+      const today = new Date();
+      return birthDate.getMonth() === today.getMonth();
     }
 
     function normalizeCartItems() {
@@ -232,7 +310,7 @@
         ...item,
         quantity: item.quantity && item.quantity > 0 ? item.quantity : 1
       }));
-      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      persistCartItems();
     }
 
     function getCartCount() {
@@ -259,19 +337,19 @@
       }
 
       item.quantity = Math.max(1, (item.quantity || 1) + amount);
-      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      persistCartItems();
       renderCart();
     }
 
     function removeItem(index) {
       cartItems.splice(index, 1);
-      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      persistCartItems();
       renderCart();
     }
 
     function clearCart() {
       cartItems = [];
-      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      persistCartItems();
       renderCart();
     }
 
@@ -288,7 +366,7 @@
 
       if (!voucherCode) {
         appliedVoucher = null;
-        localStorage.removeItem("appliedVoucher");
+        persistAppliedVoucher();
         renderCart();
         setVoucherMessage("Enter a voucher code before applying.", "error");
         return;
@@ -296,17 +374,25 @@
 
       if (!voucherCatalog[voucherCode]) {
         appliedVoucher = null;
-        localStorage.removeItem("appliedVoucher");
+        persistAppliedVoucher();
         renderCart();
         setVoucherMessage("That voucher code is not valid yet.", "error");
         return;
       }
 
-      if (voucherCode === "BIRTHBREW" && localStorage.getItem("birthdayOfferCode") !== "BIRTHBREW") {
+      if (voucherCode === "BIRTHDAY20" && !localStorage.getItem("userDob")) {
         appliedVoucher = null;
-        localStorage.removeItem("appliedVoucher");
+        persistAppliedVoucher();
         renderCart();
-        setVoucherMessage("BIRTHBREW is only available during your eligible birthday month.", "error");
+        setVoucherMessage("Register or log in first to use BIRTHDAY20.", "error");
+        return;
+      }
+
+      if (voucherCode === "BIRTHDAY20" && !isBirthdayOfferEligible()) {
+        appliedVoucher = null;
+        persistAppliedVoucher();
+        renderCart();
+        setVoucherMessage("BIRTHDAY20 is only available during your birthday month.", "error");
         return;
       }
 
@@ -314,7 +400,7 @@
         code: voucherCode,
         ...voucherCatalog[voucherCode]
       };
-      localStorage.setItem("appliedVoucher", JSON.stringify(appliedVoucher));
+      persistAppliedVoucher();
       voucherInput.value = "";
       renderCart();
       setVoucherMessage(appliedVoucher.message, "success");
@@ -359,12 +445,12 @@
 
       if (appliedVoucher && !voucherCatalog[appliedVoucher.code]) {
         appliedVoucher = null;
-        localStorage.removeItem("appliedVoucher");
+        persistAppliedVoucher();
       }
 
-      if (appliedVoucher && appliedVoucher.code === "BIRTHBREW" && localStorage.getItem("birthdayOfferCode") !== "BIRTHBREW") {
+      if (appliedVoucher && appliedVoucher.code === "BIRTHDAY20" && !isBirthdayOfferEligible()) {
         appliedVoucher = null;
-        localStorage.removeItem("appliedVoucher");
+        persistAppliedVoucher();
       }
 
       const totals = calculateTotals();

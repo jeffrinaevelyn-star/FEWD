@@ -497,8 +497,41 @@
   }
   </script>
   <script>
+  function normalizeEmail(value){
+    return String(value || "").trim().toLowerCase();
+  }
+
+  function getUserCartStorageKey(email){
+    return "cartItems:" + normalizeEmail(email);
+  }
+
+  function syncActiveCartSession(){
+    const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+    const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+
+    if(loggedIn && userEmail){
+      const savedCart = JSON.parse(localStorage.getItem(getUserCartStorageKey(userEmail)) || "[]");
+      localStorage.setItem("cartItems", JSON.stringify(savedCart));
+      return savedCart;
+    }
+
+    localStorage.setItem("cartItems", JSON.stringify([]));
+    localStorage.removeItem("appliedVoucher");
+    return [];
+  }
+
+  function persistCartItems(){
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+    const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+    const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+    if(loggedIn && userEmail){
+      localStorage.setItem(getUserCartStorageKey(userEmail), JSON.stringify(cartItems));
+    }
+  }
+
   let selectedBean = null;
-  let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  let cartItems = syncActiveCartSession();
 
   function updateCartCount(){
     const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
@@ -543,9 +576,10 @@ return;
 }
 
 cartItems.push({ ...selectedBean });
-localStorage.setItem("cartItems", JSON.stringify(cartItems));
+persistCartItems();
 updateCartCount();
-document.getElementById("cart-message").innerText = selectedBean.name + " added to cart.";
+document.getElementById("cart-message").innerText = "The product has been added to the cart successfully.";
+alert("The product has been added to the cart successfully.");
 }
 
 let currentQuestion = 0;

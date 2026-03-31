@@ -79,7 +79,7 @@
 <input type="tel" id="phone" placeholder="Enter your phone number" autocomplete="tel" inputmode="tel" required>
 
 <label for="dob">Date of Birth</label>
-<input type="date" id="dob" required>
+<input type="date" id="dob" autocomplete="bday" required>
 <p id="birthday-offer-status" class="register-offer-status"></p>
 
 <label for="password">Password</label>
@@ -88,6 +88,13 @@
 
 <label for="confirmPassword">Confirm Password</label>
 <input type="password" id="confirmPassword" placeholder="Confirm password" autocomplete="new-password" minlength="10" required>
+
+<label for="captchaAnswer">Captcha</label>
+<div class="captcha-row">
+<p id="captcha-question" class="form-help captcha-question"></p>
+<button type="button" id="refresh-captcha" class="captcha-refresh-btn">Refresh</button>
+</div>
+<input type="text" id="captchaAnswer" placeholder="Enter captcha answer" inputmode="numeric" required>
 
 <p id="error" class="form-message error" aria-live="polite"></p>
 
@@ -196,7 +203,42 @@ closeMenu();
   </script>
   <script>
 
-const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+function getUserCartStorageKey(email){
+return "cartItems:" + normalizeEmail(email);
+}
+
+function getUserVoucherStorageKey(email){
+return "appliedVoucher:" + normalizeEmail(email);
+}
+
+function initializeGuestCart(){
+localStorage.setItem("cartItems", JSON.stringify([]));
+localStorage.removeItem("appliedVoucher");
+return [];
+}
+
+function syncActiveCartSession(){
+const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+const userEmail = normalizeEmail(localStorage.getItem("userEmail") || "");
+
+if(loggedIn && userEmail){
+const savedCart = JSON.parse(localStorage.getItem(getUserCartStorageKey(userEmail)) || "[]");
+const savedVoucher = JSON.parse(localStorage.getItem(getUserVoucherStorageKey(userEmail)) || "null");
+localStorage.setItem("cartItems", JSON.stringify(savedCart));
+
+if(savedVoucher){
+localStorage.setItem("appliedVoucher", JSON.stringify(savedVoucher));
+}else{
+localStorage.removeItem("appliedVoucher");
+}
+
+return savedCart;
+}
+
+return initializeGuestCart();
+}
+
+const cartItems = syncActiveCartSession();
 const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
 document.getElementById("cart-count").innerText = totalItems;
 const registerForm = document.getElementById("register-form");
@@ -205,8 +247,22 @@ const birthdayOfferStatus = document.getElementById("birthday-offer-status");
 const registerQuery = new URLSearchParams(window.location.search);
 const requestedOffer = registerQuery.get("offer");
 const errorMessage = document.getElementById("error");
+const captchaQuestion = document.getElementById("captcha-question");
+const captchaAnswerInput = document.getElementById("captchaAnswer");
+const refreshCaptchaButton = document.getElementById("refresh-captcha");
+const passwordInput = document.getElementById("password");
+const passwordHelp = document.getElementById("password-help");
+let currentCaptchaAnswer = "";
 
-dobInput.max = new Date().toISOString().split("T")[0];
+function getTodayDateString(){
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+return year + "-" + month + "-" + day;
+}
+
+dobInput.max = getTodayDateString();
 
 function normalizeEmail(value){
 return value.trim().toLowerCase();
@@ -232,6 +288,61 @@ function isStrongPassword(value){
 return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/.test(value);
 }
 
+function getDobValue(){
+if(dobInput.value){
+return dobInput.value;
+}
+
+if(dobInput.valueAsDate instanceof Date && !Number.isNaN(dobInput.valueAsDate.getTime())){
+const year = dobInput.valueAsDate.getFullYear();
+const month = String(dobInput.valueAsDate.getMonth() + 1).padStart(2, "0");
+const day = String(dobInput.valueAsDate.getDate()).padStart(2, "0");
+return year + "-" + month + "-" + day;
+}
+
+return "";
+}
+
+function isBirthdayOfferEligible(dob){
+if(!dob){
+return false;
+}
+
+const birthDate = new Date(dob + "T00:00:00");
+const today = new Date();
+return birthDate.getMonth() === today.getMonth();
+}
+
+function syncBirthdayOfferEligibility(dob){
+localStorage.setItem("userDob", dob);
+
+if(isBirthdayOfferEligible(dob)){
+localStorage.setItem("birthdayOfferCode", "BIRTHDAY20");
+}else{
+localStorage.removeItem("birthdayOfferCode");
+}
+}
+
+function updatePasswordHelp(){
+passwordHelp.style.display = isStrongPassword(passwordInput.value) ? "none" : "block";
+}
+
+function showRegisterMessage(message, shouldAlert){
+errorMessage.innerText = message;
+
+if(shouldAlert){
+alert(message);
+}
+}
+
+function generateCaptcha(){
+const firstNumber = Math.floor(Math.random() * 10) + 1;
+const secondNumber = Math.floor(Math.random() * 10) + 1;
+currentCaptchaAnswer = String(firstNumber + secondNumber);
+captchaQuestion.innerText = "Solve this to continue: " + firstNumber + " + " + secondNumber + " = ?";
+captchaAnswerInput.value = "";
+}
+
 async function hashValue(value, salt){
 const encoded = new TextEncoder().encode(value + salt);
 const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
@@ -247,8 +358,16 @@ return Array.from(values)
   .join("");
 }
 
+function getStoredUsers(){
+return JSON.parse(localStorage.getItem("velvetUsers") || "[]");
+}
+
+function saveStoredUsers(users){
+localStorage.setItem("velvetUsers", JSON.stringify(users));
+}
+
 function updateBirthdayOfferStatus() {
-const dobValue = dobInput.value;
+const dobValue = getDobValue();
 
 if(requestedOffer !== "birthday"){
 birthdayOfferStatus.innerText = "";
@@ -257,44 +376,53 @@ return;
 }
 
 if(dobValue === ""){
-birthdayOfferStatus.innerText = "Enter your date of birth to check whether the BIRTHBREW birthday offer is active for you.";
+birthdayOfferStatus.innerText = "Enter your date of birth to check whether the BIRTHDAY20 offer is active for you.";
 birthdayOfferStatus.className = "register-offer-status";
 return;
 }
 
-const birthDate = new Date(dobValue);
-const today = new Date();
-const isBirthdayMonth = birthDate.getMonth() === today.getMonth();
+const birthDate = new Date(dobValue + "T00:00:00");
+const isBirthdayMonth = isBirthdayOfferEligible(dobValue);
 const birthMonthName = birthDate.toLocaleString("en-US", { month: "long" });
 
 if(isBirthdayMonth){
-birthdayOfferStatus.innerText = "Great news. Your birth month matches this month, so code BIRTHBREW is available after registration.";
+birthdayOfferStatus.innerText = "Great news. Your birth month matches this month, so code BIRTHDAY20 is available after registration.";
 birthdayOfferStatus.className = "register-offer-status eligible";
 return;
 }
 
-birthdayOfferStatus.innerText = "Your birthday offer unlocks in " + birthMonthName + ". Register now and use code BIRTHBREW during your birthday month.";
+birthdayOfferStatus.innerText = "Your birthday offer unlocks in " + birthMonthName + ". Register now and use code BIRTHDAY20 during your birthday month.";
 birthdayOfferStatus.className = "register-offer-status waiting";
 }
 
 dobInput.addEventListener("input", updateBirthdayOfferStatus);
+dobInput.addEventListener("change", updateBirthdayOfferStatus);
+dobInput.addEventListener("focus", function(){
+if(typeof dobInput.showPicker === "function"){
+dobInput.showPicker();
+}
+});
+refreshCaptchaButton.addEventListener("click", generateCaptcha);
+passwordInput.addEventListener("input", updatePasswordHelp);
 updateBirthdayOfferStatus();
+updatePasswordHelp();
+generateCaptcha();
 
 async function registerUser(){
 
 const name = normalizeName(document.getElementById("name").value);
 const email = normalizeEmail(document.getElementById("email").value);
 const phone = normalizePhone(document.getElementById("phone").value);
-const dob = document.getElementById("dob").value;
+const dob = getDobValue();
 const password = document.getElementById("password").value;
 const confirmPassword = document.getElementById("confirmPassword").value;
-const existingEmail = normalizeEmail(localStorage.getItem("userEmail") || "");
+const captchaAnswer = captchaAnswerInput.value.trim();
 
 errorMessage.innerText = "";
 
 if(name === "" || name.length < 2){
 
-errorMessage.innerText = "Please enter your full name.";
+showRegisterMessage("Please enter your full name.", true);
 
 return;
 
@@ -302,15 +430,7 @@ return;
 
 if(!isValidEmail(email)){
 
-errorMessage.innerText = "Please enter a valid email address.";
-
-return;
-
-}
-
-if(existingEmail && email === existingEmail){
-
-errorMessage.innerText = "An account with this email already exists.";
+showRegisterMessage("Please enter a valid email address.", true);
 
 return;
 
@@ -318,7 +438,7 @@ return;
 
 if(!isValidPhone(phone)){
 
-errorMessage.innerText = "Please enter a valid phone number.";
+showRegisterMessage("Please enter a valid phone number.", true);
 
 return;
 
@@ -326,15 +446,15 @@ return;
 
 if(dob.trim() === ""){
 
-errorMessage.innerText = "Please select your date of birth.";
+showRegisterMessage("Please select your date of birth.", true);
 
 return;
 
 }
 
-if(new Date(dob) > new Date()){
+if(new Date(dob + "T00:00:00") > new Date()){
 
-errorMessage.innerText = "Date of birth cannot be in the future.";
+showRegisterMessage("Date of birth cannot be in the future.", true);
 
 return;
 
@@ -342,7 +462,7 @@ return;
 
 if(!isStrongPassword(password)){
 
-errorMessage.innerText = "Password must be at least 10 characters and include uppercase, lowercase, a number, and a special symbol.";
+showRegisterMessage("Password must be at least 10 characters and include uppercase, lowercase, a number, and a special symbol.", true);
 
 return;
 
@@ -350,42 +470,62 @@ return;
 
 if(password !== confirmPassword){
 
-errorMessage.innerText = "Passwords do not match.";
+showRegisterMessage("Passwords do not match.", true);
+
+return;
+
+}
+
+if(captchaAnswer !== currentCaptchaAnswer){
+
+showRegisterMessage("Captcha answer is incorrect. Please try again.", true);
+generateCaptcha();
 
 return;
 
 }
 
 try {
-  const response = await fetch("http://localhost:3000/api/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, phone, dob, password })
+  const users = getStoredUsers();
+  const existingUser = users.find(function(user){
+    return normalizeEmail(user.email) === email;
   });
-  
-  const data = await response.json();
-  
-  if (response.ok) {
-    if(requestedOffer === "birthday"){
-      const birthDate = new Date(dob);
-      const today = new Date();
-      if(birthDate.getMonth() === today.getMonth()){
-        localStorage.setItem("birthdayOfferCode", "BIRTHBREW");
-      }else{
-        localStorage.removeItem("birthdayOfferCode");
-      }
-    }
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("loginSecurityState");
-    localStorage.removeItem("userEmail");
-    
-    alert("Registration Successful!");
-    window.location.href = "login.html";
-  } else {
-    errorMessage.innerText = data.error || "Registration failed.";
+
+  if(existingUser){
+    showRegisterMessage("An account with this email already exists.", true);
+    return;
   }
+
+  const salt = createSalt();
+  const passwordHash = await hashValue(password, salt);
+  const newUser = {
+    id: Date.now(),
+    name,
+    email,
+    phone,
+    dob,
+    passwordHash,
+    passwordSalt: salt,
+    registeredAt: new Date().toISOString()
+  };
+
+  users.push(newUser);
+  saveStoredUsers(users);
+
+  syncBirthdayOfferEligibility(dob);
+  sessionStorage.setItem("loggedIn", "true");
+  localStorage.removeItem("loginSecurityState");
+  localStorage.setItem("userName", name);
+  localStorage.setItem("userEmail", email);
+  localStorage.setItem(getUserCartStorageKey(email), JSON.stringify([]));
+  localStorage.removeItem(getUserVoucherStorageKey(email));
+  localStorage.setItem("cartItems", JSON.stringify([]));
+  localStorage.removeItem("appliedVoucher");
+  
+  alert("Registration Successful!");
+  window.location.href = "firstpage.html";
 } catch (err) {
-  errorMessage.innerText = "Error connecting to server.";
+  showRegisterMessage("Registration failed. Please try again.", true);
 }
 
 }

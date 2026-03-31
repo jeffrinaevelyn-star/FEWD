@@ -247,7 +247,22 @@
     }
   </script>
   <script>
-    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    function syncActiveCartSession() {
+      const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+      const userEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+
+      if (loggedIn && userEmail) {
+        const savedCart = JSON.parse(localStorage.getItem("cartItems:" + userEmail) || "[]");
+        localStorage.setItem("cartItems", JSON.stringify(savedCart));
+        return savedCart;
+      }
+
+      localStorage.setItem("cartItems", JSON.stringify([]));
+      localStorage.removeItem("appliedVoucher");
+      return [];
+    }
+
+    const cartItems = syncActiveCartSession();
     const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
     document.getElementById("cart-count").innerText = totalItems;
   </script>

@@ -311,8 +311,23 @@
       const popup = document.getElementById("popup");
       const cartCount = document.getElementById("cart-count");
 
+      function syncActiveCartSession() {
+        const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+        const userEmail = (localStorage.getItem("userEmail") || "").trim().toLowerCase();
+
+        if (loggedIn && userEmail) {
+          const savedCart = JSON.parse(localStorage.getItem("cartItems:" + userEmail) || "[]");
+          localStorage.setItem("cartItems", JSON.stringify(savedCart));
+          return savedCart;
+        }
+
+        localStorage.setItem("cartItems", JSON.stringify([]));
+        localStorage.removeItem("appliedVoucher");
+        return [];
+      }
+
       function updateCartCount() {
-        const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        const cartItems = syncActiveCartSession();
         const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
         cartCount.innerText = totalItems;
       }
