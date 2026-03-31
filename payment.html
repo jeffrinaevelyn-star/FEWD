@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment | VelvetRoast</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
+  <link rel="stylesheet" href="final.css">
+</head>
+<body>
+  <nav>
+    <h2>VelvetRoast</h2>
+    <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <ul id="primary-navigation">
+      <li><a href="index.html">Home</a></li>
+      <li class="dropdown">
+        <a href="#">Coffee</a>
+        <ul class="dropdown-menu">
+          <li><a href="brew.html">Brewing Equipments</a></li>
+          <li><a href="coffee.html">Coffee Beans</a></li>
+          <li><a href="origin.html">Coffee Origin</a></li>
+        </ul>
+      </li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-icons">
+      <a href="cart.html" class="cart-link" aria-label="Cart">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span id="cart-count" class="cart-count">0</span>
+      </a>
+      <a href="register.html" aria-label="Register">
+        <i class="fa-solid fa-user"></i>
+      </a>
+    </div>
+  </nav>
+
+  <section class="payment-hero">
+    <div class="payment-hero-inner">
+      <div class="payment-hero-copy">
+        <span class="payment-kicker">Secure Checkout</span>
+        <h1>Complete Your VelvetRoast Order</h1>
+        <p>Enter your delivery and card details below to finish your order. Your cart summary stays visible on the right so you can review everything before paying.</p>
+      </div>
+      <div class="payment-hero-badges">
+        <div><i class="fa-solid fa-shield-heart"></i><span>Protected checkout flow</span></div>
+        <div><i class="fa-solid fa-truck-fast"></i><span>Fresh coffee delivered fast</span></div>
+        <div><i class="fa-solid fa-credit-card"></i><span>Card details validated locally</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="payment-section">
+    <div class="payment-layout">
+      <div class="payment-form-box">
+        <div class="payment-card-header">
+          <div>
+            <p class="payment-eyebrow">Checkout Form</p>
+            <h2>Payment Details</h2>
+          </div>
+          <div class="payment-card-icons" aria-hidden="true">
+            <span><i class="fa-brands fa-cc-visa"></i></span>
+            <span><i class="fa-brands fa-cc-mastercard"></i></span>
+            <span><i class="fa-brands fa-cc-amex"></i></span>
+          </div>
+        </div>
+
+        <form id="payment-form" novalidate>
+          <div class="payment-form-section">
+            <div class="payment-section-title">
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Delivery Address</span>
+            </div>
+          </div>
+          <div class="payment-grid">
+            <div class="full-width">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" placeholder="Enter full name" required>
+            </div>
+            <div class="full-width">
+              <label for="addressLine">Address</label>
+              <input type="text" id="addressLine" placeholder="Street address" required>
+            </div>
+            <div>
+              <label for="city">City</label>
+              <input type="text" id="city" placeholder="City" required>
+            </div>
+            <div>
+              <label for="postalCode">Postal Code</label>
+              <input type="text" id="postalCode" placeholder="Postal code" required>
+            </div>
+            <div class="full-width">
+              <label for="country">Country</label>
+              <input type="text" id="country" placeholder="Country" required>
+            </div>
+          </div>
+
+          <div class="payment-form-section payment-form-section-spaced">
+            <div class="payment-section-title">
+              <i class="fa-solid fa-credit-card"></i>
+              <span>Card Information</span>
+            </div>
+            <p class="payment-inline-note">Accepted formats are checked instantly before the payment is confirmed.</p>
+          </div>
+
+          <div class="payment-grid">
+            <div class="full-width">
+              <label for="cardName">Name On Card</label>
+              <input type="text" id="cardName" placeholder="Cardholder name" required>
+            </div>
+            <div class="full-width">
+              <label for="cardNumber">Card Number</label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" inputmode="numeric" required>
+            </div>
+            <div>
+              <label for="expiryDate">Expiry Date</label>
+              <input type="text" id="expiryDate" placeholder="MM/YY" required>
+            </div>
+            <div>
+              <label for="cvv">CVV</label>
+              <input type="password" id="cvv" placeholder="CVV" inputmode="numeric" required>
+            </div>
+          </div>
+
+          <p id="payment-error" class="form-message error" aria-live="polite"></p>
+          <button type="submit">Pay Now</button>
+        </form>
+      </div>
+
+      <aside class="payment-summary-card">
+        <div class="payment-summary-top">
+          <div>
+            <p class="payment-eyebrow">Review Order</p>
+            <h2>Order Summary</h2>
+          </div>
+          <div class="payment-summary-badge">Ready To Pay</div>
+        </div>
+        <div id="payment-items" class="payment-summary-list"></div>
+        <div class="payment-summary-line">
+          <span>Items</span>
+          <strong id="payment-items-count">0</strong>
+        </div>
+        <div class="payment-summary-line">
+          <span>Subtotal</span>
+          <strong id="payment-subtotal">$0.00</strong>
+        </div>
+        <div class="payment-summary-line">
+          <span>Discount</span>
+          <strong id="payment-discount">-$0.00</strong>
+        </div>
+        <div class="payment-summary-line">
+          <span>Delivery</span>
+          <strong id="payment-delivery">$0.00</strong>
+        </div>
+        <div class="payment-summary-line">
+          <span>Total</span>
+          <strong id="payment-total">$0.00</strong>
+        </div>
+        <div class="payment-assurance">
+          <div><i class="fa-solid fa-mug-hot"></i><span>Freshly packed with every order</span></div>
+          <div><i class="fa-solid fa-receipt"></i><span>Summary updates before final payment</span></div>
+        </div>
+        <p class="payment-note">Use demo card details if you like. This form confirms the order locally and clears the cart after payment.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookies</a>
+      </div>
+      <p>© 2026 VelvetRoast</p>
+    </div>
+  </footer>
+
+  <script>
+    const siteNav = document.querySelector("nav");
+    const navToggle = document.querySelector(".nav-toggle");
+    const navLinks = document.getElementById("primary-navigation");
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+    if (!document.querySelector(".mobile-nav-backdrop")) {
+      document.body.insertAdjacentHTML("beforeend", '<div class="mobile-nav-backdrop" aria-hidden="true"></div>');
+    }
+
+    if (!document.querySelector(".mobile-bottom-nav")) {
+      document.body.insertAdjacentHTML(
+        "beforeend",
+        `
+          <div class="mobile-bottom-nav" aria-label="Mobile quick navigation">
+            <a href="index.html" class="${currentPage === "index.html" ? "active" : ""}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="coffee.html" class="${currentPage === "coffee.html" ? "active" : ""}"><i class="fa-solid fa-mug-hot"></i><span>Coffee</span></a>
+            <a href="menu.html" class="${currentPage === "menu.html" ? "active" : ""}"><i class="fa-solid fa-book-open"></i><span>Menu</span></a>
+            <a href="cart.html" class="${currentPage === "cart.html" ? "active" : ""}"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+          </div>
+        `
+      );
+    }
+
+    const navBackdrop = document.querySelector(".mobile-nav-backdrop");
+
+    if (siteNav && navToggle && navLinks) {
+      function closeMenu() {
+        siteNav.classList.remove("menu-open");
+        document.body.classList.remove("menu-open");
+        navToggle.setAttribute("aria-expanded", "false");
+      }
+
+      navToggle.addEventListener("click", function () {
+        const isOpen = siteNav.classList.toggle("menu-open");
+        document.body.classList.toggle("menu-open", isOpen);
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      navLinks.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", closeMenu);
+      });
+
+      if (navBackdrop) {
+        navBackdrop.addEventListener("click", closeMenu);
+      }
+    }
+  </script>
+  <script>
+    function normalizeEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function getUserCartStorageKey(email) {
+      return "cartItems:" + normalizeEmail(email);
+    }
+
+    function getUserVoucherStorageKey(email) {
+      return "appliedVoucher:" + normalizeEmail(email);
+    }
+
+    function syncActiveCartSession() {
+      const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+      const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+
+      if (loggedIn && userEmail) {
+        const savedCart = JSON.parse(localStorage.getItem(getUserCartStorageKey(userEmail)) || "[]");
+        localStorage.setItem("cartItems", JSON.stringify(savedCart));
+        return savedCart;
+      }
+
+      const guestCart = JSON.parse(sessionStorage.getItem("guestCartItems") || "[]");
+      localStorage.setItem("cartItems", JSON.stringify(guestCart));
+      localStorage.removeItem("appliedVoucher");
+      return guestCart;
+    }
+
+    function formatCurrency(amount) {
+      return "$" + Number(amount || 0).toFixed(2);
+    }
+
+    function getCartCount(items) {
+      return items.reduce(function(total, item) {
+        return total + (item.quantity || 1);
+      }, 0);
+    }
+
+    function persistCartAndVoucher(items) {
+      localStorage.setItem("cartItems", JSON.stringify(items));
+      localStorage.removeItem("appliedVoucher");
+      localStorage.removeItem("pendingCheckout");
+
+      const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+      const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+      if (loggedIn && userEmail) {
+        localStorage.setItem(getUserCartStorageKey(userEmail), JSON.stringify(items));
+        localStorage.removeItem(getUserVoucherStorageKey(userEmail));
+      } else {
+        sessionStorage.setItem("guestCartItems", JSON.stringify(items));
+        sessionStorage.removeItem("guestAppliedVoucher");
+      }
+    }
+
+    const activeCartItems = syncActiveCartSession();
+    document.getElementById("cart-count").innerText = getCartCount(activeCartItems);
+
+    const checkoutData = JSON.parse(localStorage.getItem("pendingCheckout") || "null");
+    const paymentError = document.getElementById("payment-error");
+
+    if (!checkoutData || !Array.isArray(checkoutData.items) || !checkoutData.items.length) {
+      paymentError.innerText = "Your checkout session is empty. Please return to the cart first.";
+    } else {
+      document.getElementById("payment-items").innerHTML = checkoutData.items.map(function(item) {
+        return '<div class="payment-summary-item"><span>' + item.name + ' x ' + (item.quantity || 1) + '</span><strong>' + item.price + '</strong></div>';
+      }).join("");
+      document.getElementById("payment-items-count").innerText = getCartCount(checkoutData.items);
+      document.getElementById("payment-subtotal").innerText = formatCurrency(checkoutData.totals.subtotal);
+      document.getElementById("payment-discount").innerText = "-"+ formatCurrency(checkoutData.totals.discount);
+      document.getElementById("payment-delivery").innerText = formatCurrency(checkoutData.totals.delivery);
+      document.getElementById("payment-total").innerText = formatCurrency(checkoutData.totals.total);
+    }
+
+    document.getElementById("payment-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      paymentError.innerText = "";
+
+      const fullName = document.getElementById("fullName").value.trim();
+      const addressLine = document.getElementById("addressLine").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const postalCode = document.getElementById("postalCode").value.trim();
+      const country = document.getElementById("country").value.trim();
+      const cardName = document.getElementById("cardName").value.trim();
+      const cardNumber = document.getElementById("cardNumber").value.replace(/\s+/g, "");
+      const expiryDate = document.getElementById("expiryDate").value.trim();
+      const cvv = document.getElementById("cvv").value.trim();
+
+      if (!checkoutData || !checkoutData.items || !checkoutData.items.length) {
+        paymentError.innerText = "Your checkout session is empty. Please return to the cart first.";
+        return;
+      }
+
+      if (!fullName || !addressLine || !city || !postalCode || !country || !cardName || !cardNumber || !expiryDate || !cvv) {
+        paymentError.innerText = "Please complete all payment and address details.";
+        return;
+      }
+
+      if (!/^\d{12,19}$/.test(cardNumber)) {
+        paymentError.innerText = "Please enter a valid card number.";
+        return;
+      }
+
+      if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+        paymentError.innerText = "Please enter expiry date as MM/YY.";
+        return;
+      }
+
+      if (!/^\d{3,4}$/.test(cvv)) {
+        paymentError.innerText = "Please enter a valid CVV.";
+        return;
+      }
+
+      persistCartAndVoucher([]);
+      alert("Payment successful. Your order has been placed.");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

@@ -21,7 +21,7 @@
       <i class="fa-solid fa-bars"></i>
     </button>
     <ul id="primary-navigation">
-      <li><a href="firstpage.html">Home</a></li>
+      <li><a href="index.html">Home</a></li>
       <li class="dropdown">
         <a href="#">Coffee</a>
         <ul class="dropdown-menu">
@@ -292,7 +292,7 @@
     const siteNav = document.querySelector("nav");
     const navToggle = document.querySelector(".nav-toggle");
     const navLinks = document.getElementById("primary-navigation");
-    const currentPage = window.location.pathname.split("/").pop() || "firstpage.html";
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
     if (!document.querySelector(".mobile-nav-backdrop")) {
       document.body.insertAdjacentHTML("beforeend", '<div class="mobile-nav-backdrop" aria-hidden="true"></div>');
@@ -303,7 +303,7 @@
         "beforeend",
         `
           <div class="mobile-bottom-nav" aria-label="Mobile quick navigation">
-            <a href="firstpage.html" class="${currentPage === "firstpage.html" ? "active" : ""}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="index.html" class="${currentPage === "index.html" ? "active" : ""}"><i class="fa-solid fa-house"></i><span>Home</span></a>
             <a href="coffee.html" class="${currentPage === "coffee.html" ? "active" : ""}"><i class="fa-solid fa-mug-hot"></i><span>Coffee</span></a>
             <a href="menu.html" class="${currentPage === "menu.html" ? "active" : ""}"><i class="fa-solid fa-book-open"></i><span>Menu</span></a>
             <a href="cart.html" class="${currentPage === "cart.html" ? "active" : ""}"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
@@ -357,6 +357,10 @@
       return "cartItems:" + normalizeEmail(email);
     }
 
+    function getGuestCartItems() {
+      return JSON.parse(sessionStorage.getItem("guestCartItems") || "[]");
+    }
+
     function syncActiveCartSession() {
       const loggedIn = sessionStorage.getItem("loggedIn") === "true";
       const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
@@ -367,9 +371,10 @@
         return savedCart;
       }
 
-      localStorage.setItem("cartItems", JSON.stringify([]));
+      const guestCart = getGuestCartItems();
+      localStorage.setItem("cartItems", JSON.stringify(guestCart));
       localStorage.removeItem("appliedVoucher");
-      return [];
+      return guestCart;
     }
 
     function persistCartItems() {
@@ -379,6 +384,8 @@
       const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
       if (loggedIn && userEmail) {
         localStorage.setItem(getUserCartStorageKey(userEmail), JSON.stringify(cartItems));
+      } else {
+        sessionStorage.setItem("guestCartItems", JSON.stringify(cartItems));
       }
     }
 
