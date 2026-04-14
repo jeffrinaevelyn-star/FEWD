@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
       Equipment
@@ -52,6 +53,7 @@
     </section>
 
     <section class="equipment-search-section">
+      <h2 style="position:absolute;left:-9999px;">Search Brewing Equipment</h2>
       <div class="menu-search equipment-search" role="search">
         <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
         <input
@@ -67,6 +69,7 @@
   
   <!-- PRODUCTS -->
   <section class="bean-products">
+    <h2 style="position:absolute;left:-9999px;">Brewing Equipment Collection</h2>
     <div class="bean-card">
       <img src="french.jpg" alt="French Press Coffee Maker">
       <h3>French Press Coffee Maker</h3>
@@ -81,7 +84,7 @@
         '4-cup capacity',
         'Rich, smooth, low-acid extraction',
         'Perfect for slow mornings and weekend coffee rituals.',
-        '4.7 ⭐'
+        '4.7 stars'
       )">View Product</button>
     </div>
 
@@ -100,7 +103,7 @@
         'Single-serve brew size',
         'Balanced extraction with clarity',
         'Ideal for mindful brewing and tasting different beans.',
-        '4.6 ⭐'
+        '4.6 stars'
       )">View Product</button>
     </div>
 
@@ -119,7 +122,7 @@
         '15-bar pressure system',
         'Strong crema and rich flavor',
         'Perfect for lattes, cappuccinos, and fast morning shots.',
-        '4.8 ⭐'
+        '4.8 stars'
       )">View Product</button>
     </div>
 
@@ -138,7 +141,7 @@
         'Adjustable grind settings',
         'Consistent grind for multiple brew styles',
         'Great for travel setups and fresh daily brewing.',
-        '4.5 ⭐'
+        '4.5 stars'
       )">View Product</button>
     </div>
 
@@ -157,7 +160,7 @@
         'Hot and cold frothing modes',
         'Velvety texture in minutes',
         'Perfect for cozy cappuccinos and iced lattes alike.',
-        '4.6 ⭐'
+        '4.6 stars'
       )">View Product</button>
     </div>
 
@@ -176,7 +179,7 @@
         'Built-in timer feature',
         'Precise pour-over and espresso support',
         'Ideal for improving consistency in every cup.',
-        '4.7 ⭐'
+        '4.7 stars'
       )">View Product</button>
     </div>
 
@@ -193,12 +196,12 @@
 
         <div class="popup-container">
           <div class="popup-left">
-            <img id="popup-img" alt="">
+            <img id="popup-img" src="french.jpg" alt="Selected brewing equipment">
           </div>
 
           <div class="popup-right">
-            <h2 id="popup-name"></h2>
-            <h3 id="popup-price"></h3>
+            <h2 id="popup-name">Selected Equipment</h2>
+            <h3 id="popup-price">Price details</h3>
             <p id="popup-desc"></p>
             <p id="popup-bestfor"></p>
             <p id="popup-material"></p>
@@ -228,7 +231,7 @@
            <a href="#">Cookies</a>  
          </div>
          
-         <p>© 2026 VelvetRoast  ☕</p>  
+         <p>&copy; 2026 VelvetRoast</p>  
        </div>
      </footer>
 
@@ -406,5 +409,6 @@
 
       updateCartCount();
      </script>
+    <script src="profile.js"></script>
   </body>
 </html>

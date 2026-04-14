@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login | VelvetRoast</title>
 
@@ -299,13 +300,15 @@ return JSON.parse(localStorage.getItem("velvetUsers") || "[]");
 function saveCurrentUser(user){
 localStorage.setItem("loggedIn", "true");
 localStorage.setItem("userId", String(user.id));
-localStorage.setItem("userName", user.name);
+localStorage.setItem("userName", user.username || user.name);
+localStorage.setItem("userFullName", user.name || "");
 localStorage.setItem("userEmail", user.email);
 localStorage.setItem("userPhone", user.phone || "");
 localStorage.setItem("userDob", user.dob || "");
 localStorage.setItem("currentUser", JSON.stringify({
   id: user.id,
   name: user.name,
+  username: user.username || user.name,
   email: user.email,
   phone: user.phone || "",
   dob: user.dob || "",
@@ -392,7 +395,6 @@ try {
 
   if (enteredHash === user.passwordHash) {
     clearSecurityState();
-    alert("Login Successful!");
     sessionStorage.setItem("loggedIn","true");
     saveCurrentUser(user);
     syncBirthdayOfferEligibility(user.dob);
@@ -403,6 +405,7 @@ try {
     }else{
       localStorage.removeItem("appliedVoucher");
     }
+    alert("Welcome, " + (user.username || user.name) + "! Login successful.");
     window.location.href = "index.html";
   } else {
     const updatedState = recordFailedAttempt();
@@ -423,6 +426,7 @@ await checkLogin();
 });
 
 </script>
+<script src="profile.js"></script>
 
 </body>
 </html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Register | VelvetRoast</title>
@@ -72,22 +73,25 @@
 <label for="name">Full Name</label>
 <input type="text" id="name" placeholder="Enter your name" autocomplete="name" maxlength="80" required>
 
+<label for="username">Username</label>
+<input type="text" id="username" placeholder="Enter your username" autocomplete="username" maxlength="30" required>
+
 <label for="email">Email</label>
 <input type="email" id="email" placeholder="Enter your email" autocomplete="email" required>
 
 <label for="phone">Phone Number</label>
-<input type="tel" id="phone" placeholder="Enter your phone number" autocomplete="tel" inputmode="tel" required>
+<input type="tel" id="phone" placeholder="Enter your phone number" autocomplete="tel" inputmode="numeric" maxlength="10" required>
 
 <label for="dob">Date of Birth</label>
 <input type="date" id="dob" autocomplete="bday" required>
 <p id="birthday-offer-status" class="register-offer-status"></p>
 
 <label for="password">Password</label>
-<input type="password" id="password" placeholder="Create password" autocomplete="new-password" minlength="10" required>
-<p id="password-help" class="form-help">Use at least 10 characters with uppercase, lowercase, a number, and a special symbol.</p>
+<input type="password" id="password" placeholder="Create password" autocomplete="new-password" minlength="10" maxlength="10" required>
+<p id="password-help" class="form-help">Use exactly 10 characters with uppercase, lowercase, a number, and a special symbol.</p>
 
 <label for="confirmPassword">Confirm Password</label>
-<input type="password" id="confirmPassword" placeholder="Confirm password" autocomplete="new-password" minlength="10" required>
+<input type="password" id="confirmPassword" placeholder="Confirm password" autocomplete="new-password" minlength="10" maxlength="10" required>
 
 <label for="captchaAnswer">Captcha</label>
 <div class="captcha-row">
@@ -252,6 +256,8 @@ const captchaQuestion = document.getElementById("captcha-question");
 const captchaAnswerInput = document.getElementById("captchaAnswer");
 const refreshCaptchaButton = document.getElementById("refresh-captcha");
 const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirmPassword");
+const phoneInput = document.getElementById("phone");
 const passwordHelp = document.getElementById("password-help");
 let currentCaptchaAnswer = "";
 
@@ -273,8 +279,12 @@ function normalizeName(value){
 return value.trim().replace(/\s+/g, " ");
 }
 
+function normalizeUsername(value){
+return value.trim().replace(/\s+/g, "");
+}
+
 function normalizePhone(value){
-return value.replace(/[^\d+]/g, "");
+return value.replace(/\D/g, "").slice(0, 10);
 }
 
 function isValidEmail(value){
@@ -282,11 +292,11 @@ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 function isValidPhone(value){
-return /^\+?\d{8,15}$/.test(value);
+return /^\d{10}$/.test(value);
 }
 
 function isStrongPassword(value){
-return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/.test(value);
+return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10}$/.test(value);
 }
 
 function getDobValue(){
@@ -326,6 +336,16 @@ localStorage.removeItem("birthdayOfferCode");
 
 function updatePasswordHelp(){
 passwordHelp.style.display = isStrongPassword(passwordInput.value) ? "none" : "block";
+}
+
+function enforcePasswordLimit(event){
+if(event.target.value.length > 10){
+event.target.value = event.target.value.slice(0, 10);
+}
+}
+
+function enforcePhoneLimit(event){
+event.target.value = normalizePhone(event.target.value);
 }
 
 function showRegisterMessage(message, shouldAlert){
@@ -370,13 +390,15 @@ localStorage.setItem("velvetUsers", JSON.stringify(users));
 function saveCurrentUser(user){
 localStorage.setItem("loggedIn", "true");
 localStorage.setItem("userId", String(user.id));
-localStorage.setItem("userName", user.name);
+localStorage.setItem("userName", user.username || user.name);
+localStorage.setItem("userFullName", user.name);
 localStorage.setItem("userEmail", user.email);
 localStorage.setItem("userPhone", user.phone);
 localStorage.setItem("userDob", user.dob);
 localStorage.setItem("currentUser", JSON.stringify({
   id: user.id,
   name: user.name,
+  username: user.username || user.name,
   email: user.email,
   phone: user.phone,
   dob: user.dob,
@@ -421,7 +443,10 @@ dobInput.showPicker();
 }
 });
 refreshCaptchaButton.addEventListener("click", generateCaptcha);
+phoneInput.addEventListener("input", enforcePhoneLimit);
+passwordInput.addEventListener("input", enforcePasswordLimit);
 passwordInput.addEventListener("input", updatePasswordHelp);
+confirmPasswordInput.addEventListener("input", enforcePasswordLimit);
 updateBirthdayOfferStatus();
 updatePasswordHelp();
 generateCaptcha();
@@ -429,6 +454,7 @@ generateCaptcha();
 async function registerUser(){
 
 const name = normalizeName(document.getElementById("name").value);
+const username = normalizeUsername(document.getElementById("username").value);
 const email = normalizeEmail(document.getElementById("email").value);
 const phone = normalizePhone(document.getElementById("phone").value);
 const dob = getDobValue();
@@ -441,6 +467,14 @@ errorMessage.innerText = "";
 if(name === "" || name.length < 2){
 
 showRegisterMessage("Please enter your full name.", true);
+
+return;
+
+}
+
+if(username === "" || username.length < 3){
+
+showRegisterMessage("Please enter a username with at least 3 characters.", true);
 
 return;
 
@@ -480,7 +514,7 @@ return;
 
 if(!isStrongPassword(password)){
 
-showRegisterMessage("Password must be at least 10 characters and include uppercase, lowercase, a number, and a special symbol.", true);
+showRegisterMessage("Password must be exactly 10 characters and include uppercase, lowercase, a number, and a special symbol.", true);
 
 return;
 
@@ -508,9 +542,17 @@ try {
   const existingUser = users.find(function(user){
     return normalizeEmail(user.email) === email;
   });
+  const existingUsername = users.find(function(user){
+    return normalizeUsername(user.username || "") === username;
+  });
 
   if(existingUser){
     showRegisterMessage("An account with this email already exists.", true);
+    return;
+  }
+
+  if(existingUsername){
+    showRegisterMessage("This username is already taken. Please choose another one.", true);
     return;
   }
 
@@ -519,6 +561,7 @@ try {
   const newUser = {
     id: Date.now(),
     name,
+    username,
     email,
     phone,
     dob,
@@ -539,7 +582,7 @@ try {
   localStorage.setItem("cartItems", JSON.stringify([]));
   localStorage.removeItem("appliedVoucher");
   
-  alert("Registration Successful!");
+  alert("Welcome, " + username + "! Registration successful.");
   window.location.href = "index.html";
 } catch (err) {
   showRegisterMessage("Registration failed. Please try again.", true);
@@ -553,6 +596,7 @@ await registerUser();
 });
 
 </script>
+<script src="profile.js"></script>
 
 </body>
 </html>

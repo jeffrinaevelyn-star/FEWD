@@ -254,6 +254,10 @@
       return "appliedVoucher:" + normalizeEmail(email);
     }
 
+    function getOrderHistoryStorageKey(email) {
+      return "velvetOrders:" + normalizeEmail(email);
+    }
+
     function syncActiveCartSession() {
       const loggedIn = sessionStorage.getItem("loggedIn") === "true";
       const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
@@ -294,6 +298,32 @@
         sessionStorage.setItem("guestCartItems", JSON.stringify(items));
         sessionStorage.removeItem("guestAppliedVoucher");
       }
+    }
+
+    function saveCompletedOrder(checkoutData, deliveryDetails) {
+      const userEmail = normalizeEmail(localStorage.getItem("userEmail"));
+
+      if (!userEmail) {
+        return;
+      }
+
+      const existingOrders = JSON.parse(localStorage.getItem(getOrderHistoryStorageKey(userEmail)) || "[]");
+      const newOrder = {
+        id: Date.now(),
+        orderedAt: new Date().toISOString(),
+        total: checkoutData?.totals?.total || 0,
+        deliveryLocation: [deliveryDetails.city, deliveryDetails.country].filter(Boolean).join(", "),
+        items: (checkoutData?.items || []).map(function(item) {
+          return {
+            name: item.name,
+            quantity: item.quantity || 1,
+            price: item.price
+          };
+        })
+      };
+
+      existingOrders.push(newOrder);
+      localStorage.setItem(getOrderHistoryStorageKey(userEmail), JSON.stringify(existingOrders));
     }
 
     const activeCartItems = syncActiveCartSession();
@@ -354,10 +384,15 @@
         return;
       }
 
+      saveCompletedOrder(checkoutData, {
+        city: city,
+        country: country
+      });
       persistCartAndVoucher([]);
       alert("Payment successful. Your order has been placed.");
       window.location.href = "index.html";
     });
   </script>
+  <script src="profile.js"></script>
 </body>
 </html>
